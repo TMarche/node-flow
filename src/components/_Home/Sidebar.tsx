@@ -17,7 +17,7 @@ function Sidebar() {
                     className="w-full aspect-square bg-orange-400 cursor-move
                         shadow-source-initial hover:shadow-source-hover duration-300 ease-in-out"
                     onDragStart={(event) => {
-                        onDragStart(event, "stock");
+                        onDragStart(event, "source");
                     }}
                 ></div>
             </Tooltip>
@@ -27,7 +27,7 @@ function Sidebar() {
                     className="w-full aspect-square bg-orange-200 cursor-move
                         shadow-storage-initial hover:shadow-storage-hover duration-300 ease-in-out"
                     onDragStart={(event) => {
-                        onDragStart(event, "stock");
+                        onDragStart(event, "storage");
                     }}
                 ></div>
             </Tooltip>
@@ -37,7 +37,7 @@ function Sidebar() {
                     className="w-full aspect-square rounded-full bg-blue-200 cursor-move
                         shadow-extractor-initial hover:shadow-extractor-hover duration-300 ease-in-out"
                     onDragStart={(event) => {
-                        onDragStart(event, "stock");
+                        onDragStart(event, "extractor");
                     }}
                 ></div>
             </Tooltip>

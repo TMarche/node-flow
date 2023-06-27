@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && npm run build-tailwind && vite build",
     "tailwind": "npx tailwindcss -i ./src/index.css -o ./dist/output.css --watch",
+    "build-tailwind": "npx tailwindcss -i ./src/index.css -o ./dist/output.css",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

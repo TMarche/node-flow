@@ -13,7 +13,12 @@ import {
     useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { clamp } from "../../utils/utils";
+import {
+    clamp,
+    generateExtractorNodeFactory,
+    generateSourceNodeFactory,
+    generateStorageNodeFactory,
+} from "../../utils/utils";
 import TextUpdaterNode from "..//nodes/TextUpdaterNode";
 import StockNode from "../nodes/StockNode";
 import FlowNode from "../nodes/FlowNode";
@@ -24,15 +29,23 @@ import Sidebar from "./Sidebar";
 
 const nodeTypes = {
     textUpdater: TextUpdaterNode,
-    stock: StockNode,
-    flow: FlowNode,
+    source: StockNode,
+    storage: StockNode,
+    extractor: FlowNode,
 };
+
+const generateSourceNode = generateSourceNodeFactory();
+const generateStorageNode = generateStorageNodeFactory();
+const generateExtractorNode = generateExtractorNodeFactory();
 
 function HomePage() {
     const [frameTime, deltaTime] = useFrameTime();
     const reactFlowWrapper = useRef<any>(null);
     const [reactFlowInstance, setReactFlowInstance] =
         useState<ReactFlowInstance | null>();
+
+    const [nodes, setNodes, onNodesChange] = useNodesState([]);
+    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
     const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -69,91 +82,17 @@ function HomePage() {
 
             console.log(`Position: ${position}`);
 
-            const newNode = {
-                id: "stock-5",
-                type,
-                position: { x: position?.x, y: position?.y },
-                data: {
-                    name: "Copper Ore",
-                    isTargetable: false,
-                    capacity: 10000,
-                    amount: 9000,
-                },
-            };
+            let f;
+            if (type === "source") f = generateSourceNode;
+            if (type === "storage") f = generateStorageNode;
+            if (type === "extractor") f = generateExtractorNode;
+            if (f === undefined) return;
+            const newNode = f({ x: position!.x, y: position!.y });
 
             setNodes((nodes) => nodes.concat(newNode));
         },
-        [reactFlowInstance]
+        [reactFlowInstance, setNodes]
     );
-
-    const initialNodes = [
-        {
-            id: "stock-1",
-            type: "stock",
-            position: { x: 350, y: 100 },
-            data: {
-                name: "Copper Ore",
-                isTargetable: false,
-                capacity: 10000,
-                amount: 3500,
-            },
-        },
-        {
-            id: "stock-2",
-            type: "stock",
-            position: { x: 500, y: 100 },
-            data: {
-                name: "Copper Ore",
-                isTargetable: false,
-                capacity: 10000,
-                amount: 9000,
-            },
-        },
-        {
-            id: "stock-3",
-            type: "stock",
-            position: { x: 400, y: 400 },
-            data: {
-                name: "Storage",
-                isTargetable: true,
-                capacity: 16000,
-                amount: 0,
-            },
-        },
-        {
-            id: "stock-4",
-            type: "stock",
-            position: { x: 700, y: 400 },
-            data: {
-                name: "Storage",
-                isTargetable: true,
-                capacity: 50000,
-                amount: 0,
-            },
-        },
-        {
-            id: "flow-1",
-            type: "flow",
-            position: { x: 400, y: 250 },
-            data: { name: "Copper Extractor", maxRate: 6000, rate: 3500 },
-        },
-        {
-            id: "flow-2",
-            type: "flow",
-            position: { x: 500, y: 250 },
-            data: { name: "Copper Extractor", maxRate: 6000, rate: 1500 },
-        },
-    ];
-
-    const initialEdges = [
-        { id: "e-1", source: "stock-1", target: "flow-1", animated: true },
-        { id: "e-2", source: "stock-2", target: "flow-2", animated: true },
-        { id: "e-3", source: "flow-1", target: "stock-3", animated: true },
-        { id: "e-4", source: "flow-2", target: "stock-3", animated: true },
-    ];
-
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
     const flows = solveDirectFlows(nodes, edges);
 
