@@ -31,29 +31,40 @@ function App() {
         {
             id: "stock-1",
             type: "stock",
-            position: { x: 350, y: 200 },
+            position: { x: 350, y: 100 },
             data: {
                 name: "Copper Ore",
                 isTargetable: false,
                 capacity: 10000,
-                amount: 500,
+                amount: 3500,
             },
         },
         {
             id: "stock-2",
             type: "stock",
-            position: { x: 500, y: 200 },
+            position: { x: 500, y: 100 },
             data: {
                 name: "Copper Ore",
                 isTargetable: false,
                 capacity: 10000,
-                amount: 500,
+                amount: 9000,
             },
         },
         {
             id: "stock-3",
             type: "stock",
-            position: { x: 400, y: 450 },
+            position: { x: 400, y: 400 },
+            data: {
+                name: "Storage",
+                isTargetable: true,
+                capacity: 16000,
+                amount: 0,
+            },
+        },
+        {
+            id: "stock-4",
+            type: "stock",
+            position: { x: 700, y: 400 },
             data: {
                 name: "Storage",
                 isTargetable: true,
@@ -64,14 +75,14 @@ function App() {
         {
             id: "flow-1",
             type: "flow",
-            position: { x: 400, y: 350 },
-            data: { name: "Copper Extractor", maxRate: 5000, rate: 3500 },
+            position: { x: 400, y: 250 },
+            data: { name: "Copper Extractor", maxRate: 6000, rate: 3500 },
         },
         {
             id: "flow-2",
             type: "flow",
-            position: { x: 500, y: 350 },
-            data: { name: "Copper Extractor", maxRate: 5000, rate: 1500 },
+            position: { x: 500, y: 250 },
+            data: { name: "Copper Extractor", maxRate: 6000, rate: 1500 },
         },
     ];
 
@@ -91,19 +102,21 @@ function App() {
         setNodes((nodes) =>
             nodes.map((node) => {
                 const outflowForNode =
-                    (flows
+                    ((flows
                         .filter((flow) => flow.source === node.id)
                         .map((flow) => flow.rate)
                         .reduce((x, y) => x + y, 0) /
                         60000) *
-                    (deltaTime || 0);
+                        (deltaTime || 0)) /
+                    2;
                 const inflowForNode =
-                    (flows
+                    ((flows
                         .filter((flow) => flow.target === node.id)
                         .map((flow) => flow.rate)
                         .reduce((x, y) => x + y, 0) /
                         60000) *
-                    (deltaTime || 0);
+                        (deltaTime || 0)) /
+                    2;
                 node.data = {
                     ...node.data,
                     amount: clamp(
@@ -114,31 +127,9 @@ function App() {
                 };
 
                 return node;
-
-                // if (node.id === "stock-1") {
-                //     node.data = {
-                //         ...node.data,
-                //         amount: Math.max(
-                //             node.data.amount -
-                //                 (3500 / 60000) * (deltaTime || 0),
-                //             0
-                //         ),
-                //     };
-                // }
-                // if (node.id === "stock-3") {
-                //     node.data = {
-                //         ...node.data,
-                //         amount: Math.min(
-                //             node.data.amount +
-                //                 (3500 / 60000) * (deltaTime || 0),
-                //             node.data.capacity
-                //         ),
-                //     };
-                // }
-                // return node;
             })
         );
-    }, [setNodes, frameTime, deltaTime]);
+    }, [frameTime]); // THIS SHOULD *ONLY* DEPEND ON 'frameTime' -- otherwise the effect will run more frequently than it needs to
 
     const onConnect = useCallback(
         (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -154,6 +145,8 @@ function App() {
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
                 nodeTypes={nodeTypes}
+                maxZoom={4}
+                minZoom={0.25}
             >
                 <Controls />
                 <MiniMap />

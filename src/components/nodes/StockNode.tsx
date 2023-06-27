@@ -26,9 +26,10 @@ function StockNode({ data }: { data: Data }) {
         >
             <div
                 style={{
-                    height:
+                    height: `${
                         calculatePercentRemaining(data.amount, data.capacity) *
-                        sideLength,
+                        100
+                    }%`,
                 }}
                 className="absolute bottom-0 left-0 w-full bg-orange-400"
             ></div>

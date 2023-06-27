@@ -47,7 +47,10 @@ export const solveDirectFlows = (nodes: Node[], edges: Edge[]) => {
                 .filter((edge) => edge.source === currentFlowNode.id)
                 .map((edge) => nodes.find((node) => node.id === edge.target))
                 .filter((x) => x !== undefined)
-                .filter((node) => node!.type === "stock") as Node[];
+                .filter((node) => node!.type === "stock")
+                .filter(
+                    (node) => node?.data.capacity > node?.data.amount
+                ) as Node[];
 
             flows.push(
                 ...adjacentStocks.map((stock) => ({
