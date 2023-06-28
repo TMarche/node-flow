@@ -3,15 +3,15 @@ import { Handle, Position } from "reactflow";
 
 interface Data {
     name: string;
-    capacity: number;
+    maxAmount: number;
     amount: number;
     isTargetable: boolean;
 }
 
 function StockNode({ data }: { data: Data }) {
-    const sideLength = Math.sqrt(data.capacity);
-    const calculatePercentRemaining = (amount: number, capacity: number) => {
-        return amount / capacity;
+    const sideLength = Math.sqrt(data.maxAmount);
+    const calculatePercentRemaining = (amount: number, maxAmount: number) => {
+        return amount / maxAmount;
     };
 
     return (
@@ -27,7 +27,7 @@ function StockNode({ data }: { data: Data }) {
             <div
                 style={{
                     height: `${
-                        calculatePercentRemaining(data.amount, data.capacity) *
+                        calculatePercentRemaining(data.amount, data.maxAmount) *
                         100
                     }%`,
                 }}

@@ -33,14 +33,14 @@ export const solveDirectFlows = (nodes: Node[], edges: Edge[]) => {
                         node!.type === "storage" || node!.type === "source"
                 )
                 .filter(
-                    (node) => node?.data.capacity > node?.data.amount
+                    (node) => node?.data.maxAmount > node?.data.amount
                 ) as Node[];
 
             flows.push(
                 ...adjacentStocks.map((stock) => ({
                     source: currentNode.id,
                     target: stock.id,
-                    rate: currentFlowNode.data.rate as number,
+                    rate: currentFlowNode.data.amount as number,
                 }))
             );
         }

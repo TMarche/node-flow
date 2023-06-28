@@ -3,14 +3,14 @@ import { Handle, Position } from "reactflow";
 
 interface Data {
     name: string;
-    rate: number;
-    maxRate: number;
+    amount: number;
+    maxAmount: number;
 }
 
 function FlowNode({ data }: { data: Data }) {
-    const radius = Math.sqrt(data.maxRate / Math.PI);
-    const calculatePercentActive = (rate: number, maxRate: number) => {
-        return rate / maxRate;
+    const radius = Math.sqrt(data.maxAmount / Math.PI);
+    const calculatePercentActive = (amount: number, maxAmount: number) => {
+        return amount / maxAmount;
     };
 
     return (
@@ -26,13 +26,14 @@ function FlowNode({ data }: { data: Data }) {
             <div
                 style={{
                     background: `conic-gradient(rgb(96 165 250) ${
-                        calculatePercentActive(data.rate, data.maxRate) * 180
+                        calculatePercentActive(data.amount, data.maxAmount) *
+                        180
                     }deg, transparent 0deg)`,
                 }}
                 className="absolute bottom-0 left-0 w-full h-full rounded-full rotate-270"
             ></div>
             <div className="z-10 flex-1 flex flex-col justify-center">
-                <div>{data.rate}/min</div>
+                <div>{data.amount}/min</div>
             </div>
             <div className="z-10 flex-1">{data.name}</div>
             <Handle type="target" position={Position.Top} />

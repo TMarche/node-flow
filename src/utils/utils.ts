@@ -26,16 +26,22 @@ export const generateNodeFactory = () => {
 export const generateSourceNodeFactory = () => {
     let currentIdx = 0;
 
-    return (position: { x: number; y: number }) => {
+    return (position: { x: number; y: number }, maxAmount = 10000) => {
+        const sideLength = Math.sqrt(maxAmount);
+
         const node = {
             id: `source-${currentIdx}`,
             type: "source",
-            position,
+            // Adjust position for size of node
+            position: {
+                x: position.x - sideLength / 2,
+                y: position.y - sideLength / 2,
+            },
             data: {
                 name: "Copper Ore",
                 isTargetable: false,
-                capacity: 10000,
-                amount: 10000,
+                maxAmount,
+                amount: maxAmount,
             },
         };
         currentIdx++;
@@ -46,15 +52,21 @@ export const generateSourceNodeFactory = () => {
 export const generateStorageNodeFactory = () => {
     let currentIdx = 0;
 
-    return (position: { x: number; y: number }) => {
+    return (position: { x: number; y: number }, maxAmount = 10000) => {
+        const sideLength = Math.sqrt(maxAmount);
+
         const node = {
             id: `storage-${currentIdx}`,
             type: "storage",
-            position,
+            // Adjust position for size of node
+            position: {
+                x: position.x - sideLength / 2,
+                y: position.y - sideLength / 2,
+            },
             data: {
                 name: "Storage",
                 isTargetable: true,
-                capacity: 16000,
+                maxAmount: 16000,
                 amount: 0,
             },
         };
@@ -66,16 +78,21 @@ export const generateStorageNodeFactory = () => {
 export const generateExtractorNodeFactory = () => {
     let currentIdx = 0;
 
-    return (position: { x: number; y: number }) => {
+    return (position: { x: number; y: number }, maxAmount = 6000) => {
+        const radius = Math.sqrt(maxAmount / Math.PI);
+
         const node = {
             id: `extractor-${currentIdx}`,
             type: "extractor",
-            position,
+            // Adjust position for size of node
+            position: {
+                x: position.x - radius,
+                y: position.y - radius,
+            },
             data: {
                 name: "Copper Extractor",
-                isTargetable: true,
-                maxRate: 6000,
-                rate: 4500,
+                maxAmount,
+                amount: 4500,
             },
         };
         currentIdx++;

@@ -120,7 +120,7 @@ function HomePage() {
                     amount: clamp(
                         node.data.amount + inflowForNode - outflowForNode,
                         0,
-                        node.data.capacity
+                        node.data.maxAmount
                     ),
                 };
 
